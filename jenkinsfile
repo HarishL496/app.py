@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                // This automatically clones the exact GitHub repository and branch 
+                // that triggered this specific pipeline run.
+                checkout scm 
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'python3 -m py_compile app.py'
+                sleep 15
+                milestone 1
+            }
+        }
+        stage('Send Notification') {
+            steps {
+                echo "Job: ${env.JOB_NAME} | Build: ${env.BUILD_NUMBER} | URL: ${env.BUILD_URL}"
+            }
+        }
+    }
+}
+stage('Checkout') {
+    steps {
+        git url: 'https://github.com', 
+            branch: 'main'
+    }
+}
